@@ -1,11 +1,16 @@
-import React, {useState} from "react";
+import React, {PropsWithChildren, useState} from "react";
 import {Button, TextField, FormControl, Container} from "@material-ui/core";
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-import {useTodoList} from "../../states/TodoListState";
+import {connect} from "react-redux";
+import {addTodoAction} from "../../store/actionGenerators";
+import {IReduxAction, ITodoItem} from "../../types/types";
 
-const TodoInput: React.FC = () => {
+interface TodoInputProps{
+    addTodoAction: (text: string)=> IReduxAction;
+}
+
+const TodoInput: React.FC<TodoInputProps> = ({addTodoAction}) => {
     const [inputText, setInputText] = useState<string>("");
-    const addItem = useTodoList((state) => state.addItem);
     const inputHandler = (e: React.ChangeEvent<HTMLInputElement> ) : void => {
         const text: string = e.target.value;
         setInputText(text);
@@ -14,7 +19,7 @@ const TodoInput: React.FC = () => {
     const submitHandler = (e: React.FormEvent) : void => {
         e.preventDefault();
         if(inputText !== "") {
-            addItem(inputText);
+            addTodoAction(inputText)
             setInputText("");
         }
     }
@@ -43,4 +48,17 @@ const TodoInput: React.FC = () => {
     )
 }
 
-export default TodoInput;
+const mapStateToProps = (state: ITodoItem[]) => ({
+    state: state,
+});
+
+const mapDispatchToProps = {
+    addTodoAction,
+};
+
+const ComponentContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TodoInput);
+
+export default ComponentContainer;

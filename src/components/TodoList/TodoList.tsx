@@ -1,5 +1,5 @@
-import React from "react";
-import {ITodoItem} from "../../types/types";
+import React, {useEffect, useState} from "react";
+import {IReduxAction, ITodoItem} from "../../types/types";
 import {
     Container,
     IconButton,
@@ -11,12 +11,24 @@ import {
     ListItemIcon
 } from "@material-ui/core";
 import DeleteIcon from '@material-ui/icons/Delete';
-import {useTodoList} from "../../states/TodoListState";
+import { removeTodoAction, handleCheckedTodo} from "../../store/actionGenerators";
+import {connect} from "react-redux";
+import {todoStore} from "../../store/store"
 
-const TodoList: React.FC = () => {
-    const todoList = useTodoList((state) => state.todoList);
-    const handleChecked = useTodoList((state) => state.handleChecked);
-    const removeItem = useTodoList((state) => state.removeItem);
+interface TodoListProps {
+    removeTodoAction: (id: number) => IReduxAction;
+    handleCheckedTodo: (e: React.ChangeEvent<HTMLInputElement>, id: number) => IReduxAction;
+}
+
+const TodoList: React.FC<TodoListProps> = ({ removeTodoAction, handleCheckedTodo }) => {
+    const [todoList, setTodoList] = useState<Array<ITodoItem>>([])
+
+    useEffect(()=>{
+        todoStore.subscribe(() => {
+            console.log("update todo list")
+            setTodoList(todoStore.getState());
+        });
+    },[])
 
     return(
         <Container>
@@ -29,7 +41,7 @@ const TodoList: React.FC = () => {
                             <ListItemIcon>
                                 <Checkbox
                                     checked={item.isChecked}
-                                    onChange={(e)=>handleChecked(e, item.id)}
+                                    onChange={(e)=>handleCheckedTodo(e, item.id)}
                                 />
                             </ListItemIcon>
                             <ListItemText
@@ -37,7 +49,7 @@ const TodoList: React.FC = () => {
                                 style={{ textDecoration : item.isChecked ? 'line-through' : 'none' }}
                             />
                             <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="delete" onClick={()=>{removeItem(item.id)}}>
+                                <IconButton edge="end" aria-label="delete" onClick={()=>{removeTodoAction(item.id)}}>
                                     <DeleteIcon />
                                 </IconButton>
                             </ListItemSecondaryAction>
@@ -49,4 +61,18 @@ const TodoList: React.FC = () => {
     )
 }
 
-export default TodoList;
+const mapStateToProps = (state: ITodoItem[]) => ({
+    state: state,
+});
+
+const mapDispatchToProps = {
+    removeTodoAction,
+    handleCheckedTodo
+};
+
+const ComponentContainer = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(TodoList);
+
+export default ComponentContainer;

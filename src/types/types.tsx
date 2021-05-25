@@ -25,3 +25,8 @@ export interface IUseTodoList {
     removeItem: (id: number) => void;
     handleChecked: (e: React.ChangeEvent<HTMLInputElement>, id: number) => void;
 }
+
+export interface IReduxAction {
+    type: string;
+    payload: any;
+}

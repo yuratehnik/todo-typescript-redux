@@ -4,6 +4,7 @@ import TodoInput from "./components/TodoInput/TodoInput";
 import TodoList from "./components/TodoList/TodoList";
 import {Provider} from "react-redux";
 import {todoStore} from "./store/store";
+import TodoFilter from "./components/TodoFilter/TodoFilter";
 
 const App: React.FC = () => {
 
@@ -11,6 +12,7 @@ const App: React.FC = () => {
     <div className="App">
       <Provider store={todoStore}>
           <TodoInput/>
+          <TodoFilter/>
           <TodoList/>
       </Provider>
     </div>

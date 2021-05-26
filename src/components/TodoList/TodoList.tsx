@@ -25,8 +25,7 @@ const TodoList: React.FC<TodoListProps> = ({ removeTodoAction, handleCheckedTodo
 
     useEffect(()=>{
         todoStore.subscribe(() => {
-            console.log("update todo list")
-            setTodoList(todoStore.getState());
+            setTodoList(todoStore.getState().todos);
         });
     },[])
 

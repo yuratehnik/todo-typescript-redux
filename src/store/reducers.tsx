@@ -1,11 +1,11 @@
 import React from "react";
-import {combineReducers} from "redux";
+import {combineReducers, Reducer} from "redux";
 import {ITodoItem, IReduxAction} from "../types/types";
 import {ADD_ITEM, REMOVE_ITEM, HANDLE_CHECKED} from "./actionTypes";
 
 const initialState: Array<ITodoItem> = [];
 
-export const todoReducer = (state: ITodoItem[] = initialState, action: IReduxAction) => {
+export const todoReducer: Reducer<Array<ITodoItem>, IReduxAction> = (state: ITodoItem[] = initialState, action: IReduxAction) => {
     switch (action.type) {
         case ADD_ITEM:
             const newItem: ITodoItem = {
@@ -41,5 +41,7 @@ export const todoReducer = (state: ITodoItem[] = initialState, action: IReduxAct
 }
 
 export const reducers = combineReducers({
-    todoReducer
-});
+    todos: todoReducer
+} as any);
+
+export type typeOfReducers = ReturnType<typeof reducers>;

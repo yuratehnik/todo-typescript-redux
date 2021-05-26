@@ -1,10 +1,19 @@
-import React from "react";
-import {Box, Button, ButtonGroup, Container, Grid} from "@material-ui/core";
+import React, {useEffect} from "react";
+import {Box, Container, Grid} from "@material-ui/core";
 import {useFilter} from "../../context/filterContext";
 import {FILTER_ALL, FILTER_DONE, FILTER_UNDONE} from "../../context/filterStates";
+import {ToggleButton, ToggleButtonGroup} from "@material-ui/lab";
 
 const TodoFilter: React.FC = () => {
-    const {setFilter} = useFilter();
+    const {filter, setFilter} = useFilter();
+
+    const handleFilter = (event: React.MouseEvent, newAlignment: string): void => {
+        setFilter(newAlignment)
+    };
+
+    useEffect(()=>{
+        setFilter(FILTER_ALL)
+    }, [])
 
     return(
         <Container>
@@ -16,20 +25,22 @@ const TodoFilter: React.FC = () => {
                 alignItems="center"
 
             >
-                <ButtonGroup
-                    color="primary"
-                    aria-label="outlined primary button group"
+                <ToggleButtonGroup
+                    value={filter}
+                    exclusive
+                    onChange={handleFilter}
+                    aria-label="filters"
                 >
-                    <Button onClick={()=>{setFilter(FILTER_ALL)}}>
+                    <ToggleButton value={FILTER_ALL} aria-label={FILTER_ALL}>
                         All
-                    </Button>
-                    <Button onClick={()=>{setFilter(FILTER_DONE)}}>
+                    </ToggleButton>
+                    <ToggleButton value={FILTER_DONE} aria-label={FILTER_DONE}>
                         Done
-                    </Button>
-                    <Button onClick={()=>{setFilter(FILTER_UNDONE)}}>
+                    </ToggleButton>
+                    <ToggleButton value={FILTER_UNDONE} aria-label={FILTER_UNDONE}>
                         Undone
-                    </Button>
-                </ButtonGroup>
+                    </ToggleButton>
+                </ToggleButtonGroup>
             </Grid>
         </Container>
     )
